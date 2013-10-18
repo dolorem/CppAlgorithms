@@ -506,7 +506,7 @@ struct EdgeBellmanFord
 //Wierzchołek 4: 1 0 3
 void graphTest()
 {
-	ifstream file("graphTest.txt");
+	ifstream file("tests/graph/in/write.in");
 	int a, b, c, d;
 	file >> a >> b;
 	Graph<Empty, Empty> g(a);
@@ -528,7 +528,7 @@ void graphTest()
 void BFSTest()
 {
 	int a, b, c, d, s;
-	ifstream file("BFS.in");
+	ifstream file("tests/graph/in/bfs.in");
 	file >> a >> b >> s;
 	Graph<VertexBFS, Empty> g(a);
 	REP(b)
@@ -551,7 +551,7 @@ void BFSTest()
 void DFSTest()
 {
 	int a, b, c, d, s;
-	ifstream file("BFS.in");
+	ifstream file("tests/graph/in/dfs.in");
 	file >> a >> b >> s;
 	Graph<VertexDFS, Empty> g(a);
 	REP(b)
@@ -574,7 +574,7 @@ void DijkstraTest()
 {
 	int n, m, s, b, e;
 	EdgeDijkstra ed;
-	ifstream file("Dijkstra.in");
+	ifstream file("tests/graph/in/dijkstra.in");
 	file >> n >> m >> s;
 	Graph<VertexDijkstra, EdgeDijkstra> g(n);
 	REP(m)
@@ -593,7 +593,7 @@ void EulerTest()
 {
 	VI res;
 	int n, m, b, e;
-	ifstream file("eulerTest.txt");
+	ifstream file("tests/graph/in/euler.in");
 	file >> n >> m;
 	Graph<Empty, Empty> g(n);
 	Graph<Empty, EdgeUndirected> g2(n);
@@ -631,7 +631,7 @@ void EulerTest()
 void AcyclicTest()
 {
 	int a, b, c, d;
-	ifstream file("acyclicTest.txt");
+	ifstream file("tests/graph/in/acyclic.in");
 	file >> a >> b;
 	Graph<VertexScc, Empty> g(a);
 	REP(b)
@@ -659,7 +659,7 @@ void AcyclicTest()
 //Wierzchołek 5 ma pozycję 5 w porządku topologicznym.
 void TopoTest()
 {
-	ifstream file("topoTest.txt");
+	ifstream file("tests/graph/in/topological.in");
 	int a, b, c, d;
 	file >> a >> b;
 	Graph<VertexScc, Empty> g(a);
@@ -693,7 +693,7 @@ void TopoTest()
 //Wierzchołek 4:
 void SccTest()
 {
-	ifstream file("sccTest.txt");
+	ifstream file("tests/graph/in/kosajaru.in");
 	int a, b, c, d;
 	file >> a >> b;
 	Graph<VertexScc, Empty> g(a);
@@ -714,7 +714,7 @@ void SccTest()
 void MSTTest()
 {
 	int n, m, b, e;
-	ifstream file("MST.in");
+	ifstream file("tests/graph/in/prim.in");
 	file >> n >> m;
 	MSTEdge l;
 	Graph<Empty, MSTEdge> g(n);
@@ -745,7 +745,7 @@ void BellmanFordTest()
 {
 	int n, m, s, b, e;
 	EdgeBellmanFord ed;
-	ifstream file("BellmanFord.in");
+	ifstream file("tests/graph/in/bellmanFord.in");
 	file >> n >> m >> s;
 	Graph<VertexBellmanFord, EdgeBellmanFord> g(n);
 	REP(m)
@@ -758,7 +758,7 @@ void BellmanFordTest()
 		cout << i << " - distance " << g.g[i].distance << " ancestor " << g.g[i].ancestor << endl;
 }
 
-int main()
+void testAll()
 {
 	graphTest();
 	cout << endl;
