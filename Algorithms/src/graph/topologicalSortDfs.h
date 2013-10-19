@@ -1,6 +1,14 @@
+/**
+ * topologicalSortDfs.h
+ * Implements topological sorting of a dag using DFS.
+ *
+ * @author Mateusz Śmiech
+ * @version 0.0.0
+ */
+
 #include "graph.h"
 
-//Sortowanie topologiczne, zwraca wektor zawierający wierzchołki w posortowanej kolejności.
+//Returns vector containing vertices is sorted order.
 template<class Vertex, class Edge>	VI Graph<Vertex, Edge>::topoSortV()
 {
 	VI sorted(SIZE(g));
@@ -10,7 +18,7 @@ template<class Vertex, class Edge>	VI Graph<Vertex, Edge>::topoSortV()
 	return sorted;
 }
 
-//Sortuje topologicznie, kolejność będzie zawarta w polu t.
+//Order is stored in field t.
 template<class Vertex, class Edge> void Graph<Vertex, Edge>::topoSort()
 {
 	int index = SIZE(g) - 1;
@@ -20,7 +28,6 @@ template<class Vertex, class Edge> void Graph<Vertex, Edge>::topoSort()
 		index = topoDfs(i, index);
 }
 
-//DFS do sortowania topologicznego.
 template<class Vertex, class Edge> int Graph<Vertex, Edge>::topoDfs(int v, int index)
 {
 	if (!g[v].t)

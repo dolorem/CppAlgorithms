@@ -1,49 +1,54 @@
+/**
+ * graph.h
+ * Template structure representing a graph. Adjacency lists are used.
+ * Undirected graphs are represented as directed graphs with double edges.
+ *
+ * @author Śmiech Mateusz
+ * @version 0.0.0
+ */
+
 #include "../header.h"
 
-template<class Vertex, class Edge> struct Graph //Struktura generyczna reprezentująca graf.
+template<class Vertex, class Edge> struct Graph
 {
-	struct EdgeExtended : Edge //Rozszerza dodatkowe informacje o krawędzi o jej wierzchołek docelowy.
+	struct EdgeExtended : Edge
 	{
-		int destination; //Wierzchołek docelowy krawędzi.
+		int destination;
 
-		//Konstruktor tworzy nową krawędź i ustala wierzchołek docelowy.
 		EdgeExtended(int dest, Edge additional = Edge()) : Edge(additional), destination(dest)
 		{
 
 		}
 	};
 
-	struct VertexExtended : Vertex, vector<EdgeExtended> //Rozszerza wektor w celu łatwiejszej iteracji.
+	struct VertexExtended : Vertex, vector<EdgeExtended> //Extends vector class to make iteration easier.
 	{
 
 	};
 
-	vector<VertexExtended> g; //Graf.
+	vector<VertexExtended> g; //Graph.
 
 	Graph(int n = 0) : g(n)
 	{
 
 	}
 
-	//Dodaje wierzchołek nieskierowany do grafu.
-	//Pole rev zawiera indeks krawędzi zwrotnej - krawędź nieskierowana reprezentowana jest przez dwie krawędzie skierowane.
+	//Rev field contains index of return edge.
 	void addUndirectedEdge(int u, int v, Edge eg = Edge())
 	{
 		EdgeExtended e(u, eg);
-		e.rev = SIZE(g[u]) + (u == v); //Szczególny przypadek - krawędź wychodzi z tego samego wierzchołka, do którego wchodzi.
+		e.rev = SIZE(g[u]) + (u == v); //Special case - source = destination.
 		g[v].PB(e);
 		e.destination = v;
-		e.rev = SIZE(g[v]) - 1; //Odejmujemy 1, ponieważ ta krawędź już została dodana, a pole zawiera indeks.
+		e.rev = SIZE(g[v]) - 1;
 		g[u].PB(e);
 	}
 
-	//Dodaje krawędź skierowaną do grafu.
 	void addDirectedEdge(int u, int v, Edge additional = Edge())
 	{
 		g[u].PB(EdgeExtended(v, additional));
 	}
 
-	//Wypisuje graf w rosnącej kolejności wierzchołków, następnie wierzchołki do których można dojść bezpośrednio z danego wierzchołka.
 	void write()
 	{
 		REP(SIZE(g))

@@ -1,7 +1,21 @@
+/**
+ * dijkstra.h
+ * Implementation of Dijkstra's algorithm for finding single-source shortest paths in a weighed graph.
+ * Edge weighs mustn't be negative.
+ * During each iteration a previously unvisited vertex of minimal distance from source is chosen and all outgoing
+ * edges are relaxed.
+ * After completion, each vertex contains distance and ancestor in appropriate fields.
+ *
+ * complexity O(E log V + V log V)
+ * Fibonacci Heaps may change complexity to O(E + V log V)
+ *
+ * @author Mateusz Śmiech
+ * @version 0.0.0
+ */
+
 #include "graph.h"
 
-//Suruktura definiująca niemalejący porządek wierzchołków względem ich odległości od źródła.
-template<class Vertex, class Edge> struct Graph<Vertex, Edge>::DijkstraComparator
+template<class Vertex, class Edge> struct Graph<Vertex, Edge>::DijkstraComparator //Comparator for use in set.
 {
 	bool operator() (const VertexExtended *a, const VertexExtended *b) const
 	{
@@ -11,31 +25,29 @@ template<class Vertex, class Edge> struct Graph<Vertex, Edge>::DijkstraComparato
 	}
 };
 
-//Algorytm Dijkstry znajdowania najkrótszych ścieżek z danego źródła w grafie ważonym.
-//WAŻNE!! Wagi nie mogą być ujemne.
 template<class Vertex, class Edge> void Graph<Vertex, Edge>::Dijkstra(int s)
 {
-	set<VertexExtended*, DijkstraComparator> q; //kolejka priorytetowa w postaci zbioru, ulepszeniem byłby kopiec Fibonacciego, ale jest to doś skomplikowana struktura danych
-	FOREACH(it, g)
+	set<VertexExtended*, DijkstraComparator> q; //Priority queue as set. It contains pointers to vertices (not their indices).
+	FOREACH(it, g) //Initialize default values.
 	{
 		it->distance = INF;
 		it->ancestor = -1;
 	}
 	g[s].distance = 0;
-	q.insert(&g[s]); //Dodajemy źródło do kolejki.
-	VertexExtended *v; //Wskaźnik do aktualnie przetwarzanego wierzchołka.
+	q.insert(&g[s]);
+	VertexExtended *v; //Pointer to the actually processed vertex.
 	while (!q.empty())
 	{
-		v = *(q.begin()); //Odpowiednik top()
-		q.erase(q.begin()); //Odpowiednik pop()
-		FOREACH(it, *v) //Sprawdzamy wszystkie krawędzie.
+		v = *(q.begin()); //top() equivalent
+		q.erase(q.begin()); //pop() equivalent
+		FOREACH(it, *v) //Iterate outgoing edges.
 		{
-			if (g[it->destination].distance > v->distance + it->weight) //Dana krawędź może zmniejszyć wartość odległości dla wierzchołka docelowego.
+			if (g[it->destination].distance > v->distance + it->weight) //Relax edges.
 			{
-				//Tutaj wymagany jest myk z erase() i insert() - set nie obsługuje automatycznej obserwacji zmian elementów, musimy go usunąć i wstawić ponownie aby przetwarzał właściwą odległość.
+				//Unfortunately, we cannot edit value in the set. We have to remove vertex and add it again with updated distance.
 				q.erase(&g[it->destination]);
 				g[it->destination].distance = v->distance + it->weight;
-				g[it->destination].ancestor = v - &g[0]; //Odejmowanie wskaźników - odległość między elementami w tablicy (wektorze).
+				g[it->destination].ancestor = v - &g[0]; //Pointer subtraction (distance in vector (index)).
 				q.insert(&g[it->destination]);
 			}
 		}

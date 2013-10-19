@@ -1,29 +1,37 @@
+/**
+ * eulerPath.h
+ * Finds Eulerian path in a graph.
+ *
+ * @author Śmiech Mateusz
+ * @version 0.0.0
+ */
+
 #include "graph.h"
 
 template<class Vertex, class Edge> bool Graph<Vertex, Edge>::EulerDirected(VI &path)
 {
-	path.clear(); //Resetujemy wektor.
+	path.clear(); //Reset path vector.
 	int edges = 1, v = -1, h;
 	stack<int> s;
-	VI degree(SIZE(g), 0); //Będzie zawierał stopnie wyjściowe wierzchołków.
+	VI degree(SIZE(g), 0); //Contains vertices out degree.
 	REP(SIZE(g))
 	{
 		FOREACH(it, g[i])
-						degree[it->destination]++; //Które teraz ustawiamy.
+						degree[it->destination]++; //Increase out degree by 1.
 	}
-	REP(SIZE(g)) //Wyznaczamy wierzchołek początkowy.
+	REP(SIZE(g)) //Designates start vertex.
 	{
-		if ((h = degree[i]) > SIZE(g[i])) //Jeśli ma większy stopień wyjściowy od wejściowego, zostaje nowym kandydatem na wierzchołek startowy.
+		if ((h = degree[i]) > SIZE(g[i])) //In-degree > out-degree => new start candidate.
 			v = i;
-		else if (v == -1 && h) //Jeśli nie jest izolowany i nie ma jeszcze wierzchołka startowego, to samo.
+		else if (v == -1 && h) //Vertex isn't isolated and no candidate is set.
 			v = i;
-		edges += h;
+		edges += h; //Update number of edges in the graph.
 	}
-	if (v != -1) //Znaleziono wierzchołek początkowy, algorytm może przejść do następnego kroku.
+	if (v != -1) //There is a start vertex.
 		s.push(v);
-	while (!s.empty()) //Dopóki stos nie jest pusty, przeszukuje graf w głąb.
+	while (!s.empty()) //While stack isn't empty, do DFS.
 	{
-		if (!degree[v = s.top()]) //Wszystkie krawędzie zostały przetworzone, cofamy się dodając krawędzie powrotne do ścieżki Eulera.
+		if (!degree[v = s.top()]) //All edges have been processed, return adding edges to eulerian path.
 		{
 			s.pop();
 			path.PB(v);
@@ -31,11 +39,11 @@ template<class Vertex, class Edge> bool Graph<Vertex, Edge>::EulerDirected(VI &p
 		else
 			s.push(g[v][--degree[v]].destination);
 	}
-	reverse(ALL(path)); //Ścieżka Eulera wyznaczona jest w odwrotnym kierunku.
-	return edges == SIZE(path); //Prawda, jeśli wszyskie krawędzie należą do ścieżki.
+	reverse(ALL(path)); //Path is reversed.
+	return edges == SIZE(path); //true if all edges are in the path.
 }
 
-//Algorytm działa tak samo jak dla grafów skierowanych, ale musi dodatkowo odznaczać wykorzystane krawędzie (występują niejako podwójnie - normalna i transponowana).
+//Algorithm works in the same way, but it has to store visited edges - there exist both normal and transpose edges.
 template<class Vertex, class Edge> bool Graph<Vertex, Edge>::EulerUndirected(VI &path)
 {
 	int v = -1;
@@ -48,7 +56,7 @@ template<class Vertex, class Edge> bool Graph<Vertex, Edge>::EulerUndirected(VI 
 		if (degree[i] || (v == -1 && degree[i]))
 			v = i;
 	}
-	vector<bool> used(edges[SIZE(g)], 0); //Wektor służący do odznaczania wykorzystanych krawędzi.
+	vector<bool> used(edges[SIZE(g)], 0);
 	if (v != -1)
 		s.push(v);
 	while (!s.empty())

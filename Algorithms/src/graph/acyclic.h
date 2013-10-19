@@ -1,21 +1,28 @@
+/**
+ * acyclic.h
+ * Functions checking if a graph is acyclic. For directed graphs it uses topological sort, for undirected - simple DFS.
+ * complexity O(V + E)
+ *
+ * @author Mateusz Śmiech
+ * @version 0.0.0
+ */
+
 #include "topologicalSortDfs.h"
 
-//Sprawdza, czy dany graf skierowany jest acykliczny.
 template<class Vertex, class Edge>	bool Graph<Vertex, Edge>::isAcyclicDirected()
 {
-	topoSort(); //Najpierw sortuje go topologicznie.
-	REP(SIZE(g))
+	topoSort();
+	REP(SIZE(g)) //Iterate every edge.
 	{
 		FOREACH(it, g[i])
 		{
-			if (g[i].t >= g[it->destination].t) //Sprawdza czy wszystkie wierzchołki prowadzą do wierzchołków o mniejszym numerze.
+			if (g[i].t >= g[it->destination].t) //Check if every edge connects vertex with lesser number with vertex with greater number.
 				return false;
 		}
 	}
 	return true;
 }
 
-//Sprawdza czy dany graf nieskierowany jest acykliczny.
 template<class Vertex, class Edge> bool Graph<Vertex, Edge>::isAcyclicUndirected()
 {
 	acyclic = true;
@@ -30,16 +37,16 @@ template<class Vertex, class Edge> bool Graph<Vertex, Edge>::isAcyclicUndirected
 
 template<class Vertex, class Edge> void Graph<Vertex, Edge>::acyclicDfs(int v, Edge *e)
 {
-	if (!vis[v]) //Wierzchołek nie był odwiedzony, jest ok.
+	if (!vis[v])
 	{
 		vis[v] = true;
 		FOREACH(it, g[v])
 		{
-			if (&*it != e) //Nie chcemy się cofnąć krawędzią z której przyszliśmy.
+			if (&*it != e) //We don't want to go back the edge we have come from.
 				acyclicDfs(it->destination, &g[it->destination][it->rev]);
 		}
 	}
-	else //Wierzchołek był odwiedzony, znaleziono cykl.
+	else
 		acyclic = false;
 }
 
